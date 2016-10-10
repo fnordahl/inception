@@ -39,22 +39,13 @@ machines:
     constraints: arch=amd64 mem=4G
     series: xenial
   '21':
-    # XXX: avoid flavors with epehmeral storage for ceph-osd
-    #      xenial/cloud-init does not seem to handle this well
-    #      further analysis required
-    constraints: arch=amd64 mem=4G
+    constraints: arch=amd64
     series: xenial
   '22':
-    # XXX: avoid flavors with epehmeral storage for ceph-osd
-    #      xenial/cloud-init does not seem to handle this well
-    #      further analysis required
-    constraints: arch=amd64 mem=4G
+    constraints: arch=amd64
     series: xenial
   '23':
-    # XXX: avoid flavors with epehmeral storage for ceph-osd
-    #      xenial/cloud-init does not seem to handle this well
-    #      further analysis required
-    constraints: arch=amd64 mem=4G
+    constraints: arch=amd64
     series: xenial
   '31':
     constraints: arch=amd64 mem=8G
@@ -158,6 +149,7 @@ services:
     options:
       osd-devices: /dev/vdb
       osd-reformat: 'yes'
+      ephemeral-unmount: /mnt
     to:
     - '21'
     - '22'
