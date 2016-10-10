@@ -4,11 +4,11 @@ Inception
 Deploy OpenStack in a OpenStack cloud using Juju 2.0
 
 - Bundle is based on https://jujucharms.com/openstack-base/
-- Altered to deploy services to instances instead of the default of creating
-  LXD containers
-  - TODO: It is probably possible to make the upstream bundle work AS-IS. Have
-          to figure out plumbing for the LXD networking within OpenStack
-          instances
+- Altered to deploy services to individual instances instead of the original 
+  behaviour of creating 4 machines with services in LXD containers
+  - TODO: It is probably possible to make the default behaviour work even when
+          deploying on OpenStack. Have to figure out plumbing for the LXD
+          networking within OpenStack instances
 - Scripts used to manage life cycle of Neutron ports for neutron-gateway units
   - TODO: Implement this in bundle using Juju Spaces
 
