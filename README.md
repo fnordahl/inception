@@ -3,6 +3,16 @@ Inception
 
 Deploy OpenStack in a OpenStack cloud using Juju 2.0
 
+- Bundle is based on https://jujucharms.com/openstack-base/
+- Altered to deploy services to instances instead of the default of creating
+  LXD containers
+  - TODO: It is probably possible to make the upstream bundle work AS-IS. Have
+          to figure out plumbing for the LXD networking
+- Scripts used to manage life cycle of Cinder Volumes for ceph-osd units and
+  Neutron ports for neutron-gateway units
+  - TODO: It is probably possible to manage this with Juju itself. Figure out
+          how.
+
 Prerequisites
 -------------
 - Running OpenStack cloud
