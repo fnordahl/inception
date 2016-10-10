@@ -147,9 +147,9 @@ services:
     charm: cs:xenial/ceph-osd-3
     num_units: 3
     options:
-      osd-devices: /dev/vdb
       osd-reformat: 'yes'
-      ephemeral-unmount: /mnt
+    storage:
+      osd-devices: cinder,20G
     to:
     - '21'
     - '22'

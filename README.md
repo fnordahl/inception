@@ -9,10 +9,8 @@ Deploy OpenStack in a OpenStack cloud using Juju 2.0
   - TODO: It is probably possible to make the upstream bundle work AS-IS. Have
           to figure out plumbing for the LXD networking within OpenStack
           instances
-- Scripts used to manage life cycle of Cinder Volumes for ceph-osd units and
-  Neutron ports for neutron-gateway units
-  - TODO: It is probably possible to manage this with Juju itself. Figure out
-          how.
+- Scripts used to manage life cycle of Neutron ports for neutron-gateway units
+  - TODO: Implement this in bundle using Juju Spaces
 
 Prerequisites
 -------------
