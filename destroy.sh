@@ -36,8 +36,9 @@ if [ ${N_OSDS} -gt 0 ]; then
 
   # Wait for machines to be deleted
   echo "Waiting for machines hosting ceph-osd to be deleted before detaching volume..."
+  N_OSDS_RUNNING=1
   until [ ${N_OSDS_RUNNING} -eq 0 ]; do
-    N_OSDS_STARTED=`juju show-status |egrep "${UUID_SEARCH_STR}"|wc -l`
+    N_OSDS_RUNNING=`juju show-status |egrep "${UUID_SEARCH_STR}"|wc -l`
     sleep 2
   done
 fi
