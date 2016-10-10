@@ -16,9 +16,10 @@ Prerequisites
 -------------
 - Running OpenStack cloud
 - DNS setup to resolve/access new instances by name
-  - Either Designate set up to integrate with Nova and Neutron
-  - serverstack-dns
-    - https://launchpad.net/~openstack-charmers/+archive/ubuntu/test-tools
+  - Either
+    - Designate set up to integrate with Nova and Neutron
+    - serverstack-dns
+      - https://launchpad.net/~openstack-charmers/+archive/ubuntu/test-tools
 
 Instructions
 ------------
