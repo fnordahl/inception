@@ -36,11 +36,29 @@ Instructions
 3. Add cloud to Juju
 
     ```
+    cat << EOF > mycloud.yaml
+    clouds:
+      mycloud:
+        type: openstack
+        auth-types: [access-key, userpass]
+        regions:
+          myregion:
+            endpoint: https://192.0.2.10:5000/v3
+    EOF
+    ```
+    ```
     juju add-cloud mycloud mycloud.yaml
     ```
 
 4. Bootstrap Juju
-
+    ```
+    cat << EOF > config.yaml
+    image-metadata-url: https://198.51.100.10:443/swift/v1/simplestreams/data/
+    agent-metadata-url: https://streams.canonical.com/juju/tools/
+    agent-stream: devel
+    default-series: xenial
+    EOF
+    ```
     ```
     juju bootstrap mycloud myregion --config config.yaml
     ```
