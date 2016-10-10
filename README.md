@@ -62,4 +62,8 @@ Instructions
 8. Get coffee, tea, (popcorn?) or whatever you favor to do while waiting for
    computers
 42. profit!
-51. ./destroy.sh
+51. Destroy it
+
+    ```
+    ./destroy.sh
+    ```
