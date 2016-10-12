@@ -193,7 +193,7 @@ services:
     annotations:
       gui-x: '500'
       gui-y: '0'
-    charm: cs:xenial/keystone-2
+    charm: cs:~james-page/xenial/keystone-newton-2
     num_units: 1
     options:
       admin-password: openstack
@@ -213,7 +213,7 @@ services:
     annotations:
       gui-x: '500'
       gui-y: '500'
-    charm: cs:xenial/neutron-api-3
+    charm: cs:~james-page/xenial/neutron-api-newton-2
     num_units: 1
     options:
       neutron-security-groups: true
@@ -224,7 +224,7 @@ services:
     annotations:
       gui-x: '0'
       gui-y: '0'
-    charm: cs:xenial/neutron-gateway-2
+    charm: cs:~james-page/xenial/neutron-gateway-newton-6
     num_units: 1
     options:
       bridge-mappings: physnet1:br-ex
@@ -251,7 +251,7 @@ services:
     annotations:
       gui-x: '250'
       gui-y: '250'
-    charm: cs:xenial/nova-compute-2
+    charm: cs:~james-page/xenial/nova-compute-newton-0
     num_units: 2
     options:
       enable-live-migration: true
