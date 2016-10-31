@@ -48,10 +48,10 @@ machines:
     constraints: arch=amd64
     series: xenial
   '31':
-    constraints: arch=amd64 mem=8G
+    constraints: arch=amd64
     series: xenial
   '32':
-    constraints: arch=amd64 mem=8G
+    constraints: arch=amd64
     series: xenial
 relations:
 - - nova-compute:amqp
