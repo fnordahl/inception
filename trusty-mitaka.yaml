@@ -1,0 +1,295 @@
+machines:
+  '0':
+    constraints: arch=amd64
+    series: trusty
+  '1':
+    constraints: arch=amd64
+    series: trusty
+  '2':
+    constraints: arch=amd64
+    series: trusty
+  '3':
+    constraints: arch=amd64
+    series: trusty
+  '4':
+    constraints: arch=amd64
+    series: trusty
+  '5':
+    constraints: arch=amd64
+    series: trusty
+  '6':
+    constraints: arch=amd64
+    series: trusty
+  '7':
+    constraints: arch=amd64
+    series: trusty
+  '8':
+    constraints: arch=amd64
+    series: trusty
+  '9':
+    constraints: arch=amd64
+    series: trusty
+  '10':
+    constraints: arch=amd64
+    series: trusty
+  '11':
+    constraints: arch=amd64
+    series: trusty
+  '12':
+    constraints: arch=amd64 mem=4G
+    series: trusty
+  '21':
+    # MAKE SURE YOU USE CONSTRAINTS THAT GIVE YOU FLAVOR WITH EPHEMERAL STORAGE
+    constraints: arch=amd64
+    series: trusty
+  '22':
+    # MAKE SURE YOU USE CONSTRAINTS THAT GIVE YOU FLAVOR WITH EPHEMERAL STORAGE
+    constraints: arch=amd64
+    series: trusty
+  '23':
+    # MAKE SURE YOU USE CONSTRAINTS THAT GIVE YOU FLAVOR WITH EPHEMERAL STORAGE
+    constraints: arch=amd64
+    series: trusty
+  '31':
+    constraints: arch=amd64
+    series: trusty
+  '32':
+    constraints: arch=amd64
+    series: trusty
+relations:
+- - nova-compute:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:amqp
+  - rabbitmq-server:amqp
+- - keystone:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:identity-service
+  - keystone:identity-service
+- - glance:identity-service
+  - keystone:identity-service
+- - neutron-api:identity-service
+  - keystone:identity-service
+- - neutron-openvswitch:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - neutron-api:shared-db
+  - mysql:shared-db
+- - neutron-api:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - glance:shared-db
+  - mysql:shared-db
+- - glance:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:image-service
+  - glance:image-service
+- - nova-compute:image-service
+  - glance:image-service
+- - nova-cloud-controller:cloud-compute
+  - nova-compute:cloud-compute
+- - nova-cloud-controller:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:quantum-network-service
+  - neutron-gateway:quantum-network-service
+- - nova-compute:neutron-plugin
+  - neutron-openvswitch:neutron-plugin
+- - neutron-openvswitch:amqp
+  - rabbitmq-server:amqp
+- - openstack-dashboard:identity-service
+  - keystone:identity-service
+- - nova-cloud-controller:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:neutron-api
+  - neutron-api:neutron-api
+- - cinder:image-service
+  - glance:image-service
+- - cinder:amqp
+  - rabbitmq-server:amqp
+- - cinder:identity-service
+  - keystone:identity-service
+- - cinder:cinder-volume-service
+  - nova-cloud-controller:cinder-volume-service
+- - cinder-ceph:storage-backend
+  - cinder:storage-backend
+- - ceph-mon:client
+  - nova-compute:ceph
+- - cinder:shared-db
+  - mysql:shared-db
+- - ceph-mon:client
+  - cinder-ceph:ceph
+- - ceph-mon:client
+  - glance:ceph
+- - ceph-osd:mon
+  - ceph-mon:osd
+- - ntp:juju-info
+  - nova-compute:juju-info
+- - ntp:juju-info
+  - neutron-gateway:juju-info
+- - ceph-radosgw:mon
+  - ceph-mon:radosgw
+- - ceph-radosgw:identity-service
+  - keystone:identity-service
+series: trusty
+services:
+  ceph-mon:
+    annotations:
+      gui-x: '750'
+      gui-y: '500'
+    charm: cs:ceph-mon
+    num_units: 3
+    options:
+      expected-osd-count: 3
+    to:
+    - '0'
+    - '1'
+    - '2'
+  ceph-osd:
+    annotations:
+      gui-x: '1000'
+      gui-y: '500'
+    charm: cs:ceph-osd
+    num_units: 3
+    options:
+      osd-devices: /dev/vdb
+      osd-reformat: 'yes'
+      ephemeral-unmount: /mnt
+    to:
+    - '21'
+    - '22'
+    - '23'
+  ceph-radosgw:
+    annotations:
+      gui-x: '1000'
+      gui-y: '250'
+    charm: cs:ceph-radosgw
+    num_units: 1
+    to:
+    - '3'
+  cinder:
+    annotations:
+      gui-x: '750'
+      gui-y: '0'
+    charm: cs:cinder
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      block-device: None
+      glance-api-version: 2
+    to:
+    - '4'
+  cinder-ceph:
+    annotations:
+      gui-x: '750'
+      gui-y: '250'
+    charm: cs:cinder-ceph
+    num_units: 0
+  glance:
+    annotations:
+      gui-x: '250'
+      gui-y: '0'
+    charm: cs:glance
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+    to:
+    - '5'
+  keystone:
+    annotations:
+      gui-x: '500'
+      gui-y: '0'
+    charm: cs:keystone
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      admin-password: openstack
+    to:
+    - '6'
+  mysql:
+    annotations:
+      gui-x: '0'
+      gui-y: '250'
+    charm: cs:percona-cluster
+    num_units: 1
+    options:
+      max-connections: 20000
+    to:
+    - '12'
+  neutron-api:
+    annotations:
+      gui-x: '500'
+      gui-y: '500'
+    charm: cs:neutron-api
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      neutron-security-groups: true
+      flat-network-providers: physnet1
+    to:
+    - '7'
+  neutron-gateway:
+    annotations:
+      gui-x: '0'
+      gui-y: '0'
+    charm: cs:neutron-gateway
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      bridge-mappings: physnet1:br-ex
+      data-port: br-ex:ens7
+    to:
+    - '8'
+  neutron-openvswitch:
+    annotations:
+      gui-x: '250'
+      gui-y: '500'
+    charm: cs:neutron-openvswitch
+    num_units: 0
+  nova-cloud-controller:
+    annotations:
+      gui-x: '0'
+      gui-y: '500'
+    charm: cs:nova-cloud-controller
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      network-manager: Neutron
+    to:
+    - '9'
+  nova-compute:
+    annotations:
+      gui-x: '250'
+      gui-y: '250'
+    charm: cs:nova-compute
+    num_units: 2
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      enable-live-migration: true
+      enable-resize: true
+      migration-auth-type: ssh
+    to:
+    - '31'
+    - '32'
+  ntp:
+    annotations:
+      gui-x: '1000'
+      gui-y: '0'
+    charm: cs:ntp
+    num_units: 0
+  openstack-dashboard:
+    annotations:
+      gui-x: '500'
+      gui-y: '-250'
+    charm: cs:openstack-dashboard
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+    to:
+    - '10'
+  rabbitmq-server:
+    annotations:
+      gui-x: '500'
+      gui-y: '250'
+    charm: cs:rabbitmq-server
+    num_units: 1
+    to:
+    - '11'
