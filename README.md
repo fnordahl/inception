@@ -1,3 +1,8 @@
+__NOTE__ The quickest and easiest way to take Juju for a spin
+         is by using http://conjure-up.io. But if you are like me
+         and want to delve into and meddle with the underlying
+         details this guide is for you!
+
 Inception
 =========
 
