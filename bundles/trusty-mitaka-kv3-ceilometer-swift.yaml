@@ -1,0 +1,261 @@
+relations:
+- - nova-compute:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:amqp
+  - rabbitmq-server:amqp
+- - keystone:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:identity-service
+  - keystone:identity-service
+- - glance:identity-service
+  - keystone:identity-service
+- - neutron-api:identity-service
+  - keystone:identity-service
+- - neutron-openvswitch:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - neutron-api:shared-db
+  - mysql:shared-db
+- - neutron-api:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - glance:shared-db
+  - mysql:shared-db
+- - glance:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:image-service
+  - glance:image-service
+- - nova-compute:image-service
+  - glance:image-service
+- - nova-cloud-controller:cloud-compute
+  - nova-compute:cloud-compute
+- - nova-cloud-controller:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:quantum-network-service
+  - neutron-gateway:quantum-network-service
+- - nova-compute:neutron-plugin
+  - neutron-openvswitch:neutron-plugin
+- - neutron-openvswitch:amqp
+  - rabbitmq-server:amqp
+- - openstack-dashboard:identity-service
+  - keystone:identity-service
+- - nova-cloud-controller:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:neutron-api
+  - neutron-api:neutron-api
+- - cinder:image-service
+  - glance:image-service
+- - cinder:amqp
+  - rabbitmq-server:amqp
+- - cinder:identity-service
+  - keystone:identity-service
+- - cinder:cinder-volume-service
+  - nova-cloud-controller:cinder-volume-service
+- - cinder-ceph:storage-backend
+  - cinder:storage-backend
+- - ceph-mon:client
+  - nova-compute:ceph
+- - cinder:shared-db
+  - mysql:shared-db
+- - ceph-mon:client
+  - cinder-ceph:ceph
+- - ceph-mon:client
+  - glance:ceph
+- - ceph-osd:mon
+  - ceph-mon:osd
+- - ntp:juju-info
+  - nova-compute:juju-info
+- - ntp:juju-info
+  - neutron-gateway:juju-info
+- - ceilometer
+  - mongodb
+- - ceilometer
+  - rabbitmq-server
+- - ceilometer
+  - keystone:identity-service
+- - ceilometer
+  - keystone:identity-notifications
+- - ceilometer-agent
+  - nova-compute
+- - ceilometer:ceilometer-service
+  - ceilometer-agent:ceilometer-service
+- - swift-proxy
+  - keystone
+- - swift-proxy
+  - swift-storage-z1
+- - swift-proxy
+  - swift-storage-z2
+- - swift-proxy
+  - swift-storage-z3
+series: trusty
+services:
+  ceph-mon:
+    annotations:
+      gui-x: '750'
+      gui-y: '500'
+    charm: cs:ceph-mon
+    num_units: 3
+    options:
+      expected-osd-count: 3
+      source: cloud:trusty-mitaka
+  ceph-osd:
+    annotations:
+      gui-x: '1000'
+      gui-y: '500'
+    charm: cs:ceph-osd
+    num_units: 3
+    options:
+      osd-devices: /dev/vdb
+      osd-reformat: 'yes'
+      ephemeral-unmount: /mnt
+      source: cloud:trusty-mitaka
+  cinder:
+    annotations:
+      gui-x: '750'
+      gui-y: '0'
+    charm: cs:cinder
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      block-device: None
+      glance-api-version: 2
+  cinder-ceph:
+    annotations:
+      gui-x: '750'
+      gui-y: '250'
+    charm: cs:cinder-ceph
+    num_units: 0
+  glance:
+    annotations:
+      gui-x: '250'
+      gui-y: '0'
+    charm: cs:glance
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+  keystone:
+    annotations:
+      gui-x: '500'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/keystone-266
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      admin-password: openstack
+      preferred-api-version: 3
+  mysql:
+    constraints: mem=4G
+    annotations:
+      gui-x: '0'
+      gui-y: '250'
+    charm: cs:percona-cluster
+    num_units: 1
+    options:
+      max-connections: 20000
+  neutron-api:
+    annotations:
+      gui-x: '500'
+      gui-y: '500'
+    charm: cs:neutron-api
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      neutron-security-groups: true
+      flat-network-providers: physnet1
+  neutron-gateway:
+    annotations:
+      gui-x: '0'
+      gui-y: '0'
+    charm: cs:neutron-gateway
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      bridge-mappings: physnet1:br-ex
+      data-port: br-ex:eth1
+  neutron-openvswitch:
+    annotations:
+      gui-x: '250'
+      gui-y: '500'
+    charm: cs:neutron-openvswitch
+    num_units: 0
+  nova-cloud-controller:
+    annotations:
+      gui-x: '0'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/nova-cloud-controller-271
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      network-manager: Neutron
+  nova-compute:
+    annotations:
+      gui-x: '250'
+      gui-y: '250'
+    charm: cs:nova-compute
+    num_units: 2
+    options:
+      openstack-origin: cloud:trusty-mitaka
+      enable-live-migration: true
+      enable-resize: true
+      migration-auth-type: ssh
+  ntp:
+    annotations:
+      gui-x: '1000'
+      gui-y: '0'
+    charm: cs:ntp
+    num_units: 0
+  openstack-dashboard:
+    annotations:
+      gui-x: '500'
+      gui-y: '-250'
+    charm: cs:openstack-dashboard
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+  rabbitmq-server:
+    annotations:
+      gui-x: '500'
+      gui-y: '250'
+    charm: cs:rabbitmq-server
+    num_units: 1
+  mongodb:
+    charm: cs:trusty/mongodb
+    num_units: 1
+  ceilometer-agent:
+    charm: cs:~openstack-charmers-next/ceilometer-agent-231
+  ceilometer:
+    charm: cs:~openstack-charmers-next/ceilometer-242
+    num_units: 1
+    options:
+      openstack-origin: cloud:trusty-mitaka
+  swift-proxy:
+    charm: cs:~openstack-charmers-next/swift-proxy
+    num_units: 1
+    options:
+      zone-assignment: manual
+      swift-hash: a253d287-d48c-472b-8619-46ad98b8fec3
+      replicas: 3
+      openstack-origin: cloud:trusty-mitaka
+  swift-storage-z1:
+    charm: cs:swift-storage
+    num_units: 1
+    options:
+      zone: 1
+      block-device: vdb
+      overwrite: "true"
+      openstack-origin: cloud:trusty-mitaka
+  swift-storage-z2:
+    charm: cs:swift-storage
+    num_units: 1
+    options:
+      zone: 2
+      block-device: vdb
+      overwrite: "true"
+      openstack-origin: cloud:trusty-mitaka
+  swift-storage-z3:
+    charm: cs:swift-storage
+    num_units: 1
+    options:
+      zone: 3
+      block-device: vdb
+      openstack-origin: cloud:trusty-mitaka
