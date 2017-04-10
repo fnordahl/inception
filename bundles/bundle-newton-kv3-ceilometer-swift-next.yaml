@@ -1,0 +1,264 @@
+relations:
+- - nova-compute:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:amqp
+  - rabbitmq-server:amqp
+- - keystone:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:identity-service
+  - keystone:identity-service
+- - glance:identity-service
+  - keystone:identity-service
+- - neutron-api:identity-service
+  - keystone:identity-service
+- - neutron-openvswitch:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - neutron-api:shared-db
+  - mysql:shared-db
+- - neutron-api:amqp
+  - rabbitmq-server:amqp
+- - neutron-gateway:neutron-plugin-api
+  - neutron-api:neutron-plugin-api
+- - glance:shared-db
+  - mysql:shared-db
+- - glance:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:image-service
+  - glance:image-service
+- - nova-compute:image-service
+  - glance:image-service
+- - nova-cloud-controller:cloud-compute
+  - nova-compute:cloud-compute
+- - nova-cloud-controller:amqp
+  - rabbitmq-server:amqp
+- - nova-cloud-controller:quantum-network-service
+  - neutron-gateway:quantum-network-service
+- - nova-compute:neutron-plugin
+  - neutron-openvswitch:neutron-plugin
+- - neutron-openvswitch:amqp
+  - rabbitmq-server:amqp
+- - openstack-dashboard:identity-service
+  - keystone:identity-service
+- - nova-cloud-controller:shared-db
+  - mysql:shared-db
+- - nova-cloud-controller:neutron-api
+  - neutron-api:neutron-api
+- - cinder:image-service
+  - glance:image-service
+- - cinder:amqp
+  - rabbitmq-server:amqp
+- - cinder:identity-service
+  - keystone:identity-service
+- - cinder:cinder-volume-service
+  - nova-cloud-controller:cinder-volume-service
+- - cinder-ceph:storage-backend
+  - cinder:storage-backend
+- - ceph-mon:client
+  - nova-compute:ceph
+- - cinder:shared-db
+  - mysql:shared-db
+- - ceph-mon:client
+  - cinder-ceph:ceph
+- - glance
+  - swift-proxy
+- - ceph-osd:mon
+  - ceph-mon:osd
+- - ntp:juju-info
+  - nova-compute:juju-info
+- - ntp:juju-info
+  - neutron-gateway:juju-info
+- - ceilometer
+  - mongodb
+- - ceilometer
+  - rabbitmq-server
+- - ceilometer
+  - keystone:identity-service
+- - ceilometer
+  - keystone:identity-notifications
+- - ceilometer-agent
+  - nova-compute
+- - ceilometer:ceilometer-service
+  - ceilometer-agent:ceilometer-service
+- - swift-proxy
+  - keystone
+- - swift-proxy
+  - swift-storage-z1
+- - swift-proxy
+  - swift-storage-z2
+- - swift-proxy
+  - swift-storage-z3
+series: xenial
+source: cloud:xenial-newton
+openstack-origin: cloud:xenial-newton
+services:
+  ceph-mon:
+    annotations:
+      gui-x: '750'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/ceph-mon
+    num_units: 3
+    options:
+      expected-osd-count: 3
+      source: cloud:xenial-newton
+  ceph-osd:
+    annotations:
+      gui-x: '1000'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/ceph-osd
+    num_units: 3
+    options:
+      osd-reformat: 'yes'
+      source: cloud:xenial-newton
+    storage:
+      osd-devices: cinder,20G
+  cinder:
+    annotations:
+      gui-x: '750'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/cinder
+    num_units: 1
+    options:
+      block-device: None
+      glance-api-version: 2
+      openstack-origin: cloud:xenial-newton
+  cinder-ceph:
+    annotations:
+      gui-x: '750'
+      gui-y: '250'
+    charm: cs:~openstack-charmers-next/cinder-ceph
+    num_units: 0
+  glance:
+    annotations:
+      gui-x: '250'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/glance
+    num_units: 1
+    options:
+      openstack-origin: cloud:xenial-newton
+  keystone:
+    annotations:
+      gui-x: '500'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/keystone
+    num_units: 1
+    options:
+      admin-password: openstack
+      preferred-api-version: 3
+      openstack-origin: cloud:xenial-newton
+  mysql:
+    constraints: mem=4G
+    annotations:
+      gui-x: '0'
+      gui-y: '250'
+    charm: cs:~openstack-charmers-next/percona-cluster
+    num_units: 1
+    options:
+      max-connections: 20000
+  neutron-api:
+    annotations:
+      gui-x: '500'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/neutron-api
+    num_units: 1
+    options:
+      neutron-security-groups: true
+      flat-network-providers: physnet1
+      openstack-origin: cloud:xenial-newton
+  neutron-gateway:
+    annotations:
+      gui-x: '0'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/neutron-gateway
+    num_units: 1
+    options:
+      bridge-mappings: physnet1:br-ex
+      data-port: br-ex:ens7
+      openstack-origin: cloud:xenial-newton
+  neutron-openvswitch:
+    annotations:
+      gui-x: '250'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/neutron-openvswitch
+    num_units: 0
+  nova-cloud-controller:
+    annotations:
+      gui-x: '0'
+      gui-y: '500'
+    charm: cs:~openstack-charmers-next/nova-cloud-controller
+    num_units: 1
+    options:
+      network-manager: Neutron
+      openstack-origin: cloud:xenial-newton
+  nova-compute:
+    annotations:
+      gui-x: '250'
+      gui-y: '250'
+    charm: cs:~openstack-charmers-next/nova-compute
+    num_units: 2
+    options:
+      enable-live-migration: true
+      enable-resize: true
+      migration-auth-type: ssh
+      openstack-origin: cloud:xenial-newton
+  ntp:
+    annotations:
+      gui-x: '1000'
+      gui-y: '0'
+    charm: cs:~openstack-charmers-next/ntp
+  ceilometer-agent:
+    openstack-origin: cloud:xenial-newton
+    charm: cs:~openstack-charmers-next/ceilometer-agent
+  openstack-dashboard:
+    annotations:
+      gui-x: '500'
+      gui-y: '-250'
+    charm: cs:~openstack-charmers-next/openstack-dashboard
+    num_units: 1
+    options:
+      openstack-origin: cloud:xenial-newton
+  rabbitmq-server:
+    annotations:
+      gui-x: '500'
+      gui-y: '250'
+    charm: cs:~openstack-charmers-next/rabbitmq-server
+    num_units: 1
+  mongodb:
+    charm: cs:trusty/mongodb
+    num_units: 1
+  ceilometer:
+    charm: cs:~openstack-charmers-next/ceilometer
+    num_units: 1
+    options:
+      openstack-origin: cloud:xenial-newton
+  swift-proxy:
+    charm: cs:~openstack-charmers-next/swift-proxy
+    num_units: 1
+    options:
+      zone-assignment: manual
+      swift-hash: a253d287-d48c-472b-8619-46ad98b8fec3
+      replicas: 3
+      openstack-origin: cloud:xenial-newton
+  swift-storage-z1:
+    charm: cs:~openstack-charmers-next/swift-storage
+    num_units: 1
+    options:
+      zone: 1
+      block-device: vdb
+      overwrite: "true"
+      openstack-origin: cloud:xenial-newton
+  swift-storage-z2:
+    charm: cs:~openstack-charmers-next/swift-storage
+    num_units: 1
+    options:
+      zone: 2
+      block-device: vdb
+      overwrite: "true"
+      openstack-origin: cloud:xenial-newton
+  swift-storage-z3:
+    charm: cs:~openstack-charmers-next/swift-storage
+    num_units: 1
+    options:
+      zone: 3
+      block-device: vdb
+      overwrite: "true"
+      openstack-origin: cloud:xenial-newton
